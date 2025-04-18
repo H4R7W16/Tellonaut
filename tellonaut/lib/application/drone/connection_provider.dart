@@ -16,6 +16,7 @@ class ConnectionNotifier extends StateNotifier<ConnectionStatus> {
     state = ConnectionStatus.connecting;
     try {
       await _repo.connect();
+      await _repo.sendCommand('command'); // SDK‑Mode sicherstellen
       state = ConnectionStatus.connected;
     } catch (_) {
       state = ConnectionStatus.error;
@@ -29,6 +30,10 @@ class ConnectionNotifier extends StateNotifier<ConnectionStatus> {
 
   Future<void> takeOff() => _repo.sendCommand('takeoff');
   Future<void> land() => _repo.sendCommand('land');
+
+  /// RC‑Tuple als **benanntes** Record
+  Future<void> sendRC(({int lr, int fb, int ud, int yw}) v) =>
+      _repo.sendCommand('rc ${v.lr} ${v.fb} ${v.ud} ${v.yw}');
 }
 
 final connectionProvider =

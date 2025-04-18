@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/drone/connection_provider.dart';
 import '../../application/drone/telemetry_provider.dart';
+import '../widgets/joystick_control.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -59,6 +60,16 @@ class HomeScreen extends ConsumerWidget {
               Text('Height: ${telemetry.height ?? '—'} cm'),
               Text('TOF: ${telemetry.tof ?? '—'} cm'),
             ],
+            const SizedBox(height: 24),
+            const JoystickControl(),
+            if (telemetry != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(
+                  telemetry.toJson().toString(), // alles als Map anzeigen
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
           ],
         ),
       ),
