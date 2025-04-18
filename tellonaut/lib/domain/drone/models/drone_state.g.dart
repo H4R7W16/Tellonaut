@@ -7,14 +7,22 @@ part of 'drone_state.dart';
 // **************************************************************************
 
 _DroneState _$DroneStateFromJson(Map<String, dynamic> json) => _DroneState(
-  battery: (json['battery'] as num).toInt(),
-  connected: json['connected'] as bool,
-  height: (json['height'] as num).toDouble(),
+  connected: json['connected'] as bool? ?? false,
+  battery: (json['battery'] as num?)?.toInt(),
+  height: (json['height'] as num?)?.toInt(),
+  tof: (json['tof'] as num?)?.toInt(),
+  pitch: (json['pitch'] as num?)?.toInt(),
+  roll: (json['roll'] as num?)?.toInt(),
+  yaw: (json['yaw'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$DroneStateToJson(_DroneState instance) =>
     <String, dynamic>{
-      'battery': instance.battery,
       'connected': instance.connected,
+      'battery': instance.battery,
       'height': instance.height,
+      'tof': instance.tof,
+      'pitch': instance.pitch,
+      'roll': instance.roll,
+      'yaw': instance.yaw,
     };

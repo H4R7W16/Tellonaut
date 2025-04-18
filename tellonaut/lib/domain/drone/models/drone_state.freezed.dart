@@ -16,7 +16,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DroneState {
 
- int get battery; bool get connected; double get height;
+// Verbindung steht? – Default: false
+ bool get connected; int? get battery;// %
+ int? get height;// cm (h)
+ int? get tof;// cm (Time of Flight Sensor)
+ int? get pitch; int? get roll; int? get yaw;
 /// Create a copy of DroneState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +33,16 @@ $DroneStateCopyWith<DroneState> get copyWith => _$DroneStateCopyWithImpl<DroneSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DroneState&&(identical(other.battery, battery) || other.battery == battery)&&(identical(other.connected, connected) || other.connected == connected)&&(identical(other.height, height) || other.height == height));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DroneState&&(identical(other.connected, connected) || other.connected == connected)&&(identical(other.battery, battery) || other.battery == battery)&&(identical(other.height, height) || other.height == height)&&(identical(other.tof, tof) || other.tof == tof)&&(identical(other.pitch, pitch) || other.pitch == pitch)&&(identical(other.roll, roll) || other.roll == roll)&&(identical(other.yaw, yaw) || other.yaw == yaw));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,battery,connected,height);
+int get hashCode => Object.hash(runtimeType,connected,battery,height,tof,pitch,roll,yaw);
 
 @override
 String toString() {
-  return 'DroneState(battery: $battery, connected: $connected, height: $height)';
+  return 'DroneState(connected: $connected, battery: $battery, height: $height, tof: $tof, pitch: $pitch, roll: $roll, yaw: $yaw)';
 }
 
 
@@ -49,7 +53,7 @@ abstract mixin class $DroneStateCopyWith<$Res>  {
   factory $DroneStateCopyWith(DroneState value, $Res Function(DroneState) _then) = _$DroneStateCopyWithImpl;
 @useResult
 $Res call({
- int battery, bool connected, double height
+ bool connected, int? battery, int? height, int? tof, int? pitch, int? roll, int? yaw
 });
 
 
@@ -66,12 +70,16 @@ class _$DroneStateCopyWithImpl<$Res>
 
 /// Create a copy of DroneState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? battery = null,Object? connected = null,Object? height = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? connected = null,Object? battery = freezed,Object? height = freezed,Object? tof = freezed,Object? pitch = freezed,Object? roll = freezed,Object? yaw = freezed,}) {
   return _then(_self.copyWith(
-battery: null == battery ? _self.battery : battery // ignore: cast_nullable_to_non_nullable
-as int,connected: null == connected ? _self.connected : connected // ignore: cast_nullable_to_non_nullable
-as bool,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as double,
+connected: null == connected ? _self.connected : connected // ignore: cast_nullable_to_non_nullable
+as bool,battery: freezed == battery ? _self.battery : battery // ignore: cast_nullable_to_non_nullable
+as int?,height: freezed == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int?,tof: freezed == tof ? _self.tof : tof // ignore: cast_nullable_to_non_nullable
+as int?,pitch: freezed == pitch ? _self.pitch : pitch // ignore: cast_nullable_to_non_nullable
+as int?,roll: freezed == roll ? _self.roll : roll // ignore: cast_nullable_to_non_nullable
+as int?,yaw: freezed == yaw ? _self.yaw : yaw // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -82,12 +90,20 @@ as double,
 @JsonSerializable()
 
 class _DroneState implements DroneState {
-  const _DroneState({required this.battery, required this.connected, required this.height});
+  const _DroneState({this.connected = false, this.battery, this.height, this.tof, this.pitch, this.roll, this.yaw});
   factory _DroneState.fromJson(Map<String, dynamic> json) => _$DroneStateFromJson(json);
 
-@override final  int battery;
-@override final  bool connected;
-@override final  double height;
+// Verbindung steht? – Default: false
+@override@JsonKey() final  bool connected;
+@override final  int? battery;
+// %
+@override final  int? height;
+// cm (h)
+@override final  int? tof;
+// cm (Time of Flight Sensor)
+@override final  int? pitch;
+@override final  int? roll;
+@override final  int? yaw;
 
 /// Create a copy of DroneState
 /// with the given fields replaced by the non-null parameter values.
@@ -102,16 +118,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DroneState&&(identical(other.battery, battery) || other.battery == battery)&&(identical(other.connected, connected) || other.connected == connected)&&(identical(other.height, height) || other.height == height));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DroneState&&(identical(other.connected, connected) || other.connected == connected)&&(identical(other.battery, battery) || other.battery == battery)&&(identical(other.height, height) || other.height == height)&&(identical(other.tof, tof) || other.tof == tof)&&(identical(other.pitch, pitch) || other.pitch == pitch)&&(identical(other.roll, roll) || other.roll == roll)&&(identical(other.yaw, yaw) || other.yaw == yaw));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,battery,connected,height);
+int get hashCode => Object.hash(runtimeType,connected,battery,height,tof,pitch,roll,yaw);
 
 @override
 String toString() {
-  return 'DroneState(battery: $battery, connected: $connected, height: $height)';
+  return 'DroneState(connected: $connected, battery: $battery, height: $height, tof: $tof, pitch: $pitch, roll: $roll, yaw: $yaw)';
 }
 
 
@@ -122,7 +138,7 @@ abstract mixin class _$DroneStateCopyWith<$Res> implements $DroneStateCopyWith<$
   factory _$DroneStateCopyWith(_DroneState value, $Res Function(_DroneState) _then) = __$DroneStateCopyWithImpl;
 @override @useResult
 $Res call({
- int battery, bool connected, double height
+ bool connected, int? battery, int? height, int? tof, int? pitch, int? roll, int? yaw
 });
 
 
@@ -139,12 +155,16 @@ class __$DroneStateCopyWithImpl<$Res>
 
 /// Create a copy of DroneState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? battery = null,Object? connected = null,Object? height = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? connected = null,Object? battery = freezed,Object? height = freezed,Object? tof = freezed,Object? pitch = freezed,Object? roll = freezed,Object? yaw = freezed,}) {
   return _then(_DroneState(
-battery: null == battery ? _self.battery : battery // ignore: cast_nullable_to_non_nullable
-as int,connected: null == connected ? _self.connected : connected // ignore: cast_nullable_to_non_nullable
-as bool,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as double,
+connected: null == connected ? _self.connected : connected // ignore: cast_nullable_to_non_nullable
+as bool,battery: freezed == battery ? _self.battery : battery // ignore: cast_nullable_to_non_nullable
+as int?,height: freezed == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
+as int?,tof: freezed == tof ? _self.tof : tof // ignore: cast_nullable_to_non_nullable
+as int?,pitch: freezed == pitch ? _self.pitch : pitch // ignore: cast_nullable_to_non_nullable
+as int?,roll: freezed == roll ? _self.roll : roll // ignore: cast_nullable_to_non_nullable
+as int?,yaw: freezed == yaw ? _self.yaw : yaw // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
