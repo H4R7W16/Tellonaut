@@ -1,4 +1,3 @@
-// impl. Drone repository
 import 'dart:async';
 
 import '../../domain/drone/drone_repository.dart';

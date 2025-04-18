@@ -16,10 +16,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DroneState {
 
-// Verbindung steht? – Default: false
- bool get connected; int? get battery;// %
- int? get height;// cm (h)
- int? get tof;// cm (Time of Flight Sensor)
+ bool get connected;// Verbindung steht?
+ int? get battery;// %
+ int? get height;// cm  (h)
+ int? get tof;// cm  (Time‑of‑Flight)
  int? get pitch; int? get roll; int? get yaw;
 /// Create a copy of DroneState
 /// with the given fields replaced by the non-null parameter values.
@@ -93,14 +93,14 @@ class _DroneState implements DroneState {
   const _DroneState({this.connected = false, this.battery, this.height, this.tof, this.pitch, this.roll, this.yaw});
   factory _DroneState.fromJson(Map<String, dynamic> json) => _$DroneStateFromJson(json);
 
-// Verbindung steht? – Default: false
 @override@JsonKey() final  bool connected;
+// Verbindung steht?
 @override final  int? battery;
-// %
+// %
 @override final  int? height;
-// cm (h)
+// cm  (h)
 @override final  int? tof;
-// cm (Time of Flight Sensor)
+// cm  (Time‑of‑Flight)
 @override final  int? pitch;
 @override final  int? roll;
 @override final  int? yaw;
