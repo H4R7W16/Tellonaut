@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'presentation/screens/home_screen.dart';
 
 void main() {
-  runApp(const TellonautApp());
+  runApp(const ProviderScope(child: TellonautApp()));
 }
 
 class TellonautApp extends StatelessWidget {
@@ -12,7 +14,7 @@ class TellonautApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tellonaut',
       theme: ThemeData(colorSchemeSeed: Colors.blue, useMaterial3: true),
-      home: const Scaffold(body: Center(child: Text('Hello Tellonaut'))),
+      home: const HomeScreen(),
     );
   }
 }

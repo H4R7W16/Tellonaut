@@ -4,7 +4,7 @@ part 'drone_state.freezed.dart';
 part 'drone_state.g.dart';
 
 @freezed
-class DroneState with _$DroneState {
+abstract class DroneState with _$DroneState {
   const factory DroneState({
     @Default(false) bool connected, // Verbindung steht?
     int? battery, // %
