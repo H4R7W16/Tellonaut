@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/drone/connection_provider.dart';
 import '../../application/drone/telemetry_provider.dart';
 import '../widgets/joystick_control.dart';
+import 'programming_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -70,6 +71,16 @@ class HomeScreen extends ConsumerWidget {
                   style: const TextStyle(fontSize: 12),
                 ),
               ),
+            ElevatedButton(
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProgrammingScreen(),
+                    ),
+                  ),
+              child: const Text('Programmieren'),
+            ),
           ],
         ),
       ),

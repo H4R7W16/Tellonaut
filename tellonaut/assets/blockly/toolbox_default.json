@@ -1,0 +1,24 @@
+{
+    "kind": "categoryToolbox",
+    "contents": [
+      {
+        "kind": "category",
+        "name": "Bewegung",
+        "colour": "#5CA65C",
+        "contents": [
+          {"kind": "block", "type": "takeoff"},
+          {"kind": "block", "type": "land"}
+        ]
+      },
+      {
+        "kind": "category",
+        "name": "Logik",
+        "colour": "#5C81A6",
+        "contents": [
+          {"kind": "block", "type": "controls_if"},
+          {"kind": "block", "type": "logic_compare"}
+        ]
+      }
+    ]
+  }
+  
