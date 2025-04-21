@@ -30,7 +30,7 @@ class _ProgState extends ConsumerState<ProgrammingScreen> {
 
     return BlocklyOptions.fromJson({
       'toolbox': toolboxJson,
-      'plugins': ['python'],
+      'plugins': const ['python'],
     });
   }
 
@@ -72,21 +72,27 @@ class _ProgState extends ConsumerState<ProgrammingScreen> {
       body: FutureBuilder<BlocklyOptions>(
         future: _workspaceFut,
         builder: (context, snap) {
-          if (!snap.hasData) {
+          if (snap.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
           }
-
-          // JS erst nach dem ersten Frame injizieren
+          if (snap.hasError) {
+            return Center(
+              child: Text(
+                'Toolbox‑Fehler:\n${snap.error}',
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          // Nach erstem Build JS injizieren
           scheduleMicrotask(_injectCustomBlocks);
 
           return BlocklyEditorWidget(
             key: _editorKey,
             workspaceConfiguration: snap.data!,
-            onChange: (data) {
-              ref
-                  .read(blocklyProvider.notifier)
-                  .update(xml: data.xml, python: data.python ?? '');
-            },
+            onChange:
+                (data) => ref
+                    .read(blocklyProvider.notifier)
+                    .update(xml: data.xml, python: data.python ?? ''),
           );
         },
       ),

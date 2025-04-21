@@ -3,20 +3,20 @@
   "contents": [
     {
       "kind": "category",
-      "name": "Logik",
+      "name": "Bewegung",
       "colour": "#5C81A6",
       "contents": [
-        { "kind": "block", "type": "controls_if" },
-        { "kind": "block", "type": "logic_compare" }
+        { "kind": "block", "type": "controls_repeat_ext" },
+        { "kind": "block", "type": "math_number" }
       ]
     },
     {
       "kind": "category",
-      "name": "Schleifen",
-      "colour": "#5CA6A6",
+      "name": "Logik",
+      "colour": "#5CA65C",
       "contents": [
-        { "kind": "block", "type": "controls_repeat_ext" },
-        { "kind": "block", "type": "controls_whileUntil" }
+        { "kind": "block", "type": "logic_compare" },
+        { "kind": "block", "type": "logic_boolean" }
       ]
     }
   ]
