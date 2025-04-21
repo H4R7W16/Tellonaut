@@ -25,13 +25,10 @@ class _ProgState extends ConsumerState<ProgrammingScreen> {
 
   Future<BlocklyOptions> _loadWorkspaceConfig() async {
     final toolboxJson = jsonDecode(
-      await rootBundle.loadString('assets/blockly/toolbox_default.json'),
+      await rootBundle.loadString('assets/blockly/toolbox_tellonaut.json'),
     );
 
-    return BlocklyOptions.fromJson({
-      'toolbox': toolboxJson,
-      'plugins': const ['python'],
-    });
+    return BlocklyOptions.fromJson({'toolbox': toolboxJson});
   }
 
   /// Lädt eigene Blöcke in den Editor (einmalig).

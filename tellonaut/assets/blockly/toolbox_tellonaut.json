@@ -1,0 +1,48 @@
+{
+    "kind": "categoryToolbox",
+    "contents": [
+      {
+        "kind": "category",
+        "name": "Bewegung",
+        "colour": "#4c97ff",
+        "contents": [
+          { "kind": "block", "type": "takeoff" },
+          { "kind": "block", "type": "land" },
+          { "kind": "block", "type": "up" },
+          { "kind": "block", "type": "down" },
+          { "kind": "block", "type": "left" },
+          { "kind": "block", "type": "right" },
+          { "kind": "block", "type": "forward" },
+          { "kind": "block", "type": "back" },
+          { "kind": "block", "type": "cw" },
+          { "kind": "block", "type": "ccw" }
+        ]
+      },
+      {
+        "kind": "category",
+        "name": "Logik",
+        "colour": "#5c81a6",
+        "contents": [
+          { "kind": "block", "type": "controls_if" },
+          { "kind": "block", "type": "logic_compare" },
+          { "kind": "block", "type": "logic_boolean" }
+        ]
+      },
+      {
+        "kind": "category",
+        "name": "Schleifen",
+        "colour": "#ffab19",
+        "contents": [
+          { "kind": "block", "type": "controls_repeat_ext" },
+          { "kind": "block", "type": "controls_whileUntil" }
+        ]
+      },
+      {
+        "kind": "category",
+        "name": "Variablen",
+        "custom": "VARIABLE",
+        "colour": "#a55b80"
+      }
+    ]
+  }
+  

@@ -26,5 +26,5 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/blockly/toolbox_default.json
+    - assets/blockly/toolbox_tellonaut.json
     - assets/blockly/custom_blocks.js
