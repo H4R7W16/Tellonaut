@@ -18,7 +18,16 @@
           {"kind": "block", "type": "controls_if"},
           {"kind": "block", "type": "logic_compare"}
         ]
+      },
+      {
+        "kind": "block",
+        "type": "takeoff"
+      },
+      {
+        "kind": "block",
+        "type": "land"
       }
+      
     ]
   }
   

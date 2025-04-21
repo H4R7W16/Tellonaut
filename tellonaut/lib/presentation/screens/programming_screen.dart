@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -13,28 +14,40 @@ class ProgrammingScreen extends ConsumerStatefulWidget {
 }
 
 class _ProgState extends ConsumerState<ProgrammingScreen> {
-  late Future<BlocklyOptions> _workspaceFuture;
+  late final Future<BlocklyOptions> _workspaceFut;
+  final GlobalKey _editorKey = GlobalKey(); // <‑  untypisiert
 
   @override
   void initState() {
     super.initState();
-    _workspaceFuture = _loadWorkspaceConfig();
+    _workspaceFut = _loadWorkspaceConfig();
   }
 
   Future<BlocklyOptions> _loadWorkspaceConfig() async {
     final toolboxJson = jsonDecode(
       await rootBundle.loadString('assets/blockly/toolbox_default.json'),
     );
+
     return BlocklyOptions.fromJson({
       'toolbox': toolboxJson,
-      // optional:
-      // 'plugins': ['python']   // aktiviert Python‑Generator explizit
+      'plugins': ['python'],
     });
+  }
+
+  /// Lädt eigene Blöcke in den Editor (einmalig).
+  Future<void> _injectCustomBlocks() async {
+    final state = _editorKey.currentState; // dynamisch
+    if (state == null) return;
+    final js = await rootBundle.loadString('assets/blockly/custom_blocks.js');
+
+    // Die interne State‑Klasse besitzt das Feld `editor`.
+    // Wir casten dynamisch, weil der Typ nicht öffentlich ist.
+    (state as dynamic).editor.runJS(js);
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(blocklyProvider);
+    final blockState = ref.watch(blocklyProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,21 +62,26 @@ class _ProgState extends ConsumerState<ProgrammingScreen> {
                       (_) => AlertDialog(
                         title: const Text('Python‑Code'),
                         content: SingleChildScrollView(
-                          child: SelectableText(state.python),
+                          child: SelectableText(blockState.python),
                         ),
                       ),
                 ),
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: _workspaceFuture,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+      body: FutureBuilder<BlocklyOptions>(
+        future: _workspaceFut,
+        builder: (context, snap) {
+          if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
+
+          // JS erst nach dem ersten Frame injizieren
+          scheduleMicrotask(_injectCustomBlocks);
+
           return BlocklyEditorWidget(
-            workspaceConfiguration: snapshot.data!,
+            key: _editorKey,
+            workspaceConfiguration: snap.data!,
             onChange: (data) {
               ref
                   .read(blocklyProvider.notifier)

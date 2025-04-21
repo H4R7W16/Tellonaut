@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/drone/connection_provider.dart';
 import '../../application/drone/telemetry_provider.dart';
 import '../widgets/joystick_control.dart';
-import 'programming_screen.dart';
+import '../screens/programming_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
