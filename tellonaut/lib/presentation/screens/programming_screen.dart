@@ -28,7 +28,10 @@ class _ProgState extends ConsumerState<ProgrammingScreen> {
       await rootBundle.loadString('assets/blockly/toolbox_tellonaut.json'),
     );
 
-    return BlocklyOptions.fromJson({'toolbox': toolboxJson});
+    return BlocklyOptions.fromJson({
+      'toolbox': toolboxJson,
+      // Python-Plugin erst später
+    });
   }
 
   /// Lädt eigene Blöcke in den Editor (einmalig).
