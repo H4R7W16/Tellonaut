@@ -1,25 +1,33 @@
-Blockly.Blocks['takeoff'] = {
+/* global Blockly */
+
+// ---------- TAKEOFF ----------
+Blockly.Blocks['drone_takeoff'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("takeoff");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(160);
+        .appendField('Starte Drohne');
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setColour(200);
+    this.setTooltip('Startet die Drohne (Take-off).');
+    this.setHelpUrl('');
   }
 };
-Blockly.Python['takeoff'] = function(block) {
-  return 'drone.takeoff()\\n';   // später an deine API koppeln
+Blockly.Python['drone_takeoff'] = function(block) {
+  return 'takeoff()\n';
 };
 
-Blockly.Blocks['land'] = {
+// ---------- LAND ----------
+Blockly.Blocks['drone_land'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("land");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(160);
+        .appendField('Lande Drohne');
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setColour(200);
+    this.setTooltip('Landet die Drohne.');
+    this.setHelpUrl('');
   }
 };
-Blockly.Python['land'] = function(block) {
-  return 'drone.land()\\n';
+Blockly.Python['drone_land'] = function(block) {
+  return 'land()\n';
 };

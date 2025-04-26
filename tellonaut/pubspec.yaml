@@ -28,3 +28,7 @@ flutter:
   assets:
     - assets/blockly/toolbox_tellonaut.json
     - assets/blockly/custom_blocks.js
+    - assets/blockly/blockly_compressed.js
+    - assets/blockly/blocks_compressed.js
+    - assets/blockly/python_compressed.js    # erst nötig, wenn du Python-Generator willst
+    - assets/blockly/msg/de.js

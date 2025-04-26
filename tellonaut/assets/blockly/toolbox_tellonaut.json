@@ -3,13 +3,19 @@
   "contents": [
     {
       "kind": "category",
-      "name": "Test",
-      "colour": 210,
+      "name": "Drohne",
+      "colour": "#4A90E2",
       "contents": [
-        {
-          "kind": "block",
-          "blockxml": "<block type=\"text_print\"><value name=\"TEXT\"><shadow type=\"text\"><field name=\"TEXT\">Hallo!</field></shadow></value></block>"
-        }
+        { "kind": "block", "type": "drone_takeoff" },
+        { "kind": "block", "type": "drone_land" }
+      ]
+    },
+    {
+      "kind": "category",
+      "name": "Logik",
+      "colour": "#5CA65C",
+      "contents": [
+        { "kind": "block", "type": "controls_if" }
       ]
     }
   ]
