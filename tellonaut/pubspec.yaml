@@ -31,5 +31,3 @@ flutter:
     - assets/blockly/msg/de.js
     - assets/blockly/blockly_compressed.js
     - assets/blockly/blocks_compressed.js
-    - assets/blockly/custom_blocks.js
-    - assets/blockly/toolbox_tellonaut.json
