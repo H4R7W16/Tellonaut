@@ -1,0 +1,28 @@
+<script>
+    (async () => {
+      const toolboxText = await window.flutter_inappwebview.callHandler('loadAsset', 'assets/blockly_web/toolbox_tellonaut.json');
+      const toolbox = JSON.parse(toolboxText);
+    
+      const workspace = Blockly.inject('workspace', {
+          toolbox,
+          scrollbars: true,
+          trashcan: true,
+      });
+    
+      // Python-Generator laden
+      await window.flutter_inappwebview.callHandler('evalJS',
+           'assets/blockly_web/blockly_compressed.js');
+      await window.flutter_inappwebview.callHandler('evalJS',
+           'assets/blockly_web/blocks_compressed.js');
+      await window.flutter_inappwebview.callHandler('evalJS',
+           'assets/blockly_web/msg/de.js');
+      await window.flutter_inappwebview.callHandler('evalJS',
+           'assets/blockly_web/custom_blocks.js');
+    
+      workspace.addChangeListener(() => {
+         const py = Blockly.Python.workspaceToCode(workspace);
+         window.flutter_inappwebview.callHandler('onChange', py);
+      });
+    })();
+    </script>
+    

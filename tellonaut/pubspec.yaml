@@ -7,6 +7,7 @@ environment:
   flutter: '>=3.10.0 <4.0.0'
 
 dependencies:
+  flutter_inappwebview: ^6.0.0
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.6.1
@@ -14,7 +15,6 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_lints: ^2.0.0
   flutter_joystick: ^0.2.2
-  flutter_blockly: ^1.6.0
   webview_flutter: ^4.7.0
 
 dev_dependencies:
@@ -26,9 +26,9 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/blockly/toolbox_tellonaut.json
-    - assets/blockly/blockly_compressed.js
-    - assets/blockly/blocks_compressed.js
-    - assets/blockly/msg/de.js
-    - assets/blockly/custom_blocks.js
-    - assets/blockly/mobile_fix.css 
+    - assets/blockly_web/editor.html
+    - assets/blockly_web/custom_blocks.js
+    - assets/blockly_web/toolbox_tellonaut.json
+    - assets/blockly_web/blockly_compressed.js
+    - assets/blockly_web/blocks_compressed.js
+    - assets/blockly_web/msg/de.js
