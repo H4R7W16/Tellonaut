@@ -9,14 +9,6 @@
         { "kind": "block", "type": "drone_takeoff" },
         { "kind": "block", "type": "drone_land" }
       ]
-    },
-    {
-      "kind": "category",
-      "name": "Logik",
-      "colour": "#5CA65C",
-      "contents": [
-        { "kind": "block", "type": "controls_if" }
-      ]
     }
   ]
 }

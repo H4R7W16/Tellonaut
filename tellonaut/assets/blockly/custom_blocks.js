@@ -1,33 +1,23 @@
 /* global Blockly */
 
-// ---------- TAKEOFF ----------
+// TAKEOFF
 Blockly.Blocks['drone_takeoff'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Starte Drohne');
-    this.setPreviousStatement(false);
-    this.setNextStatement(false);
+  init: function () {
+    this.appendDummyInput().appendField('Starte Drohne');
     this.setColour(200);
-    this.setTooltip('Startet die Drohne (Take-off).');
-    this.setHelpUrl('');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
   }
 };
-Blockly.Python['drone_takeoff'] = function(block) {
-  return 'takeoff()\n';
-};
+Blockly.Python['drone_takeoff'] = () => 'takeoff()\n';
 
-// ---------- LAND ----------
+// LAND
 Blockly.Blocks['drone_land'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField('Lande Drohne');
-    this.setPreviousStatement(false);
-    this.setNextStatement(false);
+  init: function () {
+    this.appendDummyInput().appendField('Lande Drohne');
     this.setColour(200);
-    this.setTooltip('Landet die Drohne.');
-    this.setHelpUrl('');
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
   }
 };
-Blockly.Python['drone_land'] = function(block) {
-  return 'land()\n';
-};
+Blockly.Python['drone_land'] = () => 'land()\n';

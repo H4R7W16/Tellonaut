@@ -1,0 +1,15 @@
+/* Abstand im Fly-out, damit Blöcke nicht am Rand kleben */
+.blocklyFlyout .blocklyBlockCanvas {
+    transform: translate(8px, 8px);   /* 8 px Padding */
+  }
+  
+  /* dezenter Hintergrund für den Fly-out */
+  .blocklyFlyoutBackground {
+    fill: #f8f8f8;
+  }
+  
+  /* leicht schmalere Kategorie-Leiste */
+  .blocklyToolboxDiv {
+    width: 52px !important;        /* Standard ~56 px */
+  }
+  
