@@ -13,9 +13,10 @@ dependencies:
   flutter_riverpod: ^2.6.1
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
   flutter_joystick: ^0.2.2
-  webview_flutter: ^4.7.0
+  webview_flutter: ^4.11.0
+  webview_flutter_android: ^4.4.2
 
 dev_dependencies:
   flutter_test:
@@ -26,9 +27,9 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/blockly_web/editor.html
-    - assets/blockly_web/custom_blocks.js
-    - assets/blockly_web/toolbox_tellonaut.json
-    - assets/blockly_web/blockly_compressed.js
-    - assets/blockly_web/blocks_compressed.js
-    - assets/blockly_web/msg/de.js
+    - assets/blockly/editor.html
+    - assets/blockly/msg/de.js
+    - assets/blockly/blockly_compressed.js
+    - assets/blockly/blocks_compressed.js
+    - assets/blockly/custom_blocks.js
+    - assets/blockly/toolbox_tellonaut.json

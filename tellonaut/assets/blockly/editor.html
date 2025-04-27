@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Tellonaut Blockly</title>
+  <!-- 1) Blockly-Core -->
+  <script src="blockly_compressed.js"></script>
+  <!-- 2) Block-Definitionen (Standard) -->
+  <script src="blocks_compressed.js"></script>
+  <!-- 3) Python-Generator (wenn benötigt) -->
+  <script src="python_compressed.js"></script>
+  <!-- 4) Deutsche Übersetzungen -->
+  <script src="msg/js/de.js"></script>
+  <style>
+    html, body, #workspace { height: 100%; margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <!-- ❶ Toolbox direkt als XML – KEINE externen fetch-Aufrufe -->
+  <xml id="toolbox" style="display:none">
+    <category name="🚁 Drohne" colour="#4a90e2">
+      <block type="tn_takeoff"></block>
+      <block type="tn_land"></block>
+      <block type="tn_up">
+        <value name="VAL">
+          <shadow type="math_number">
+            <field name="NUM">50</field>
+          </shadow>
+        </value>
+      </block>
+      <!-- … weitere Blöcke nach deiner Tabelle … -->
+    </category>
+    <category name="Logik" colour="%{BKY_LOGIC_HUE}">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+    </category>
+  </xml>
+
+  <!-- ❷ Arbeits­fläche -->
+  <div id="workspace"></div>
+
+  <!-- ❸ Eigene Block-Definitionen und Generatoren -->
+  <script>
+    // === Eigene Blöcke =======================================================
+    Blockly.Blocks['tn_takeoff'] = {
+      init: function() {
+        this.appendDummyInput()
+            .appendField("Abheben");
+        this.setNextStatement(true);
+        this.setColour(210);
+      }
+    };
+    Blockly.Blocks['tn_land'] = {
+      init: function() {
+        this.appendDummyInput().appendField("Landen");
+        this.setNextStatement(true);
+        this.setColour(210);
+      }
+    };
+    Blockly.Blocks['tn_up'] = {
+      init: function() {
+        this.appendValueInput("VAL").setCheck("Number")
+            .appendField("Hoch")
+            .appendField(new Blockly.FieldNumber(50, 20, 500, 1), "VAL");
+        this.appendDummyInput().appendField("cm");
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(210);
+      }
+    };
+
+    // === Generatoren → plain SDK-Strings ================================
+    Blockly.JavaScript['tn_takeoff'] = () => 'takeoff\n';
+    Blockly.JavaScript['tn_land']   = () => 'land\n';
+    Blockly.JavaScript['tn_up']     = block => {
+      const n = Blockly.JavaScript.valueToCode(block, 'VAL',
+                    Blockly.JavaScript.ORDER_NONE) || '50';
+      return `up ${n}\n`;
+    };
+
+    // === Blockly initialisieren ===========================================
+    const workspace = Blockly.inject('workspace', {
+      toolbox: document.getElementById('toolbox'),
+      renderer: 'zelos',
+      scrollbars: true,
+      trashcan: true
+    });
+
+    // === Änderungen an Flutter senden =====================================
+    function sendToFlutter() {
+      const code = Blockly.JavaScript.workspaceToCode(workspace);
+      if (window.TellonautChannel && window.TellonautChannel.postMessage) {
+        window.TellonautChannel.postMessage(code);
+      }
+    }
+    workspace.addChangeListener(sendToFlutter);
+  </script>
+</body>
+</html>
