@@ -1,54 +1,94 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
   <title>Tellonaut Blockly</title>
-  
+
   <!-- Blockly-Kern -->
   <script src="blockly_compressed.js"></script>
   <script src="blocks_compressed.js"></script>
-  <script src="javascript_compressed.js"></script>
-  <script src="msg/js/de.js"></script>
-  
-  <!-- Eigene Blöcke NACH Blockly laden -->
+  <script src="python_compressed.js"></script>
+  <!-- Pfad korrigiert: msg/de.js statt msg/js/de.js -->
+  <script src="msg/de.js"></script>
+
+  <!-- Eigene Blöcke -->
   <script src="custom_blocks.js"></script>
-  
-  <style>html,body,#ws{height:100%;margin:0;overflow:hidden}</style></head>
-  <body>
-    <!-- Toolbox -->
-    <xml id="toolbox" style="display:none">
-      <category name="🚁 Bewegung" colour="#4a90e2">
-        <block type="tn_takeoff"></block>
-        <block type="tn_land"></block>
-        <block type="tn_up"></block>
-        <block type="tn_down"></block>
-        <block type="tn_forward"></block>
-        <block type="tn_back"></block>
-        <block type="tn_left"></block>
-        <block type="tn_right"></block>
-        <block type="tn_cw"></block>
-        <block type="tn_ccw"></block>
-        <block type="tn_flip_f"></block>
-        <block type="tn_flip_b"></block>
-        <block type="tn_flip_l"></block>
-        <block type="tn_flip_r"></block>
-        <block type="tn_motoron"></block>
-        <block type="tn_motoroff"></block>
-        <block type="tn_stop"></block>
-      </category>
-    </xml>
-  
-    <div id="ws"></div>
-  
-    <script>
-      const workspace = Blockly.inject('ws', {
-        toolbox: document.getElementById('toolbox'),
-        renderer: 'zelos', scrollbars: true, trashcan: true
-      });
-  
-      workspace.addChangeListener(() => {
-        const code = Blockly.JavaScript.workspaceToCode(workspace);
-        if (window.TellonautChannel?.postMessage) {
-          window.TellonautChannel.postMessage(code);
-        }
-      });
-    </script>
-  </body></html>
-  
+
+  <style>
+    html, body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    #toolbar {
+      flex: 0 0 auto;
+      background: #f5f5f5;
+      padding: 4px 8px;
+    }
+    #ws {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+    #runBtn { font-size:14px; padding:4px 12px; }
+  </style>
+</head>
+
+<body>
+  <div id="toolbar">
+    <button id="runBtn" onclick="sendPython()">&#9658; Run</button>
+  </div>
+
+  <div id="ws"></div>
+
+  <!-- Namespace ergänzt -->
+  <xml xmlns="https://developers.google.com/blockly/xml"
+       id="toolbox"
+       style="display:none">
+    <category name="🚁 Bewegung" colour="#4a90e2">
+      <block type="tn_takeoff"></block>
+      <block type="tn_land"></block>
+      <block type="tn_up"></block>
+      <block type="tn_down"></block>
+      <block type="tn_forward"></block>
+      <block type="tn_back"></block>
+      <block type="tn_left"></block>
+      <block type="tn_right"></block>
+      <block type="tn_cw"></block>
+      <block type="tn_ccw"></block>
+      <block type="tn_flip_f"></block>
+      <block type="tn_flip_b"></block>
+      <block type="tn_flip_l"></block>
+      <block type="tn_flip_r"></block>
+      <block type="tn_motoron"></block>
+      <block type="tn_motoroff"></block>
+      <block type="tn_stop"></block>
+    </category>
+  </xml>
+
+  <script>
+    // Workspace global speichern, falls wir es von außen brauchen
+    window.workspace = Blockly.inject('ws', {
+      toolbox: document.getElementById('toolbox'),
+      renderer: 'zelos',
+      scrollbars: true,
+      trashcan: true
+    });
+
+    function sendPython() {
+      const code = Blockly.Python.workspaceToCode(window.workspace);
+      if (window.TellonautChannel?.postMessage) {
+        window.TellonautChannel.postMessage(code);
+      }
+    }
+
+    // Optional: Live-Synchronisierung
+    window.workspace.addChangeListener(() => {
+      const autoCode = Blockly.Python.workspaceToCode(window.workspace);
+      if (window.TellonautChannel?.postMessage) {
+        window.TellonautChannel.postMessage(autoCode);
+      }
+    });
+  </script>
+</body>
+</html>
