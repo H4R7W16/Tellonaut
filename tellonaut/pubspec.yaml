@@ -27,7 +27,4 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/blockly/editor.html
-    - assets/blockly/msg/de.js
-    - assets/blockly/blockly_compressed.js
-    - assets/blockly/blocks_compressed.js
+    - assets/blockly/
