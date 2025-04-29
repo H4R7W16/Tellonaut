@@ -1,24 +1,21 @@
-/*  custom_blocks.js – 17 Tello-Blöcke  */
+/*  custom_blocks.js – 17 Tello-Blöcke (gefixt)  */
 (function () {
-  if (!window.Blockly) return;          // Sicherheits-Check
-  const HUE = 210;                      // Blockfarbe
+  if (!window.Blockly) return;
+  const HUE = 210;
 
   /* ---------- Helfer ---------- */
-  // Blöcke ohne Parameter (takeoff, land …)
   function simple(id, label, cmd) {
     Blockly.Blocks[id] = {
       init() {
         this.appendDummyInput().appendField(label);
-        this.setPreviousStatement(true)
-            .setNextStatement(true)
-            .setColour(HUE);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(HUE);
       }
     };
-    //  ▼ Python-Generator
     Blockly.Python[id] = () => `${cmd}\n`;
   }
 
-  // Blöcke mit Zahlenfeld (cm oder °)
   function number(id, label, unit, min, max, cmd) {
     Blockly.Blocks[id] = {
       init() {
@@ -27,9 +24,9 @@
             .appendField(
               new Blockly.FieldNumber(min, min, max, 1), 'VAL')
             .appendField(unit);
-        this.setPreviousStatement(true)
-            .setNextStatement(true)
-            .setColour(HUE);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(HUE);
       }
     };
     Blockly.Python[id] = blk =>
@@ -49,12 +46,11 @@
 
   /* ---------- Bewegungen (20-500 cm) ---------- */
   ['up','down','forward','back','left','right']
-    .forEach(id =>
-      number(
+    .forEach(id => number(
         `tn_${id}`,
-        id.charAt(0).toUpperCase() + id.slice(1),   // Label
-        'cm', 20, 500,                              // Einheit & Range
-        id));                                       // Befehl
+        id.charAt(0).toUpperCase() + id.slice(1),
+        'cm', 20, 500,
+        id));
 
   /* ---------- Rotationen (1-360 °) ---------- */
   number('tn_cw',  'Im UZ-Sinn',    '°', 1, 360, 'cw');
