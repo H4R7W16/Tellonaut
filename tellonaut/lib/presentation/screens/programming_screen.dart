@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart'; // Android-Backend
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import '../../application/block/blockly_controller.dart';
 
 class ProgrammingScreen extends ConsumerStatefulWidget {
-  const ProgrammingScreen({Key? key}) : super(key: key);
+  const ProgrammingScreen({super.key});
 
   @override
   ConsumerState<ProgrammingScreen> createState() => _ProgrammingScreenState();
@@ -22,7 +22,6 @@ class _ProgrammingScreenState extends ConsumerState<ProgrammingScreen> {
   void initState() {
     super.initState();
 
-    // ► Controller im neuen 4.x-Stil aufsetzen
     final creationParams =
         Platform.isAndroid
             ? AndroidWebViewControllerCreationParams()
@@ -39,8 +38,7 @@ class _ProgrammingScreenState extends ConsumerState<ProgrammingScreen> {
           )
           ..loadFlutterAsset('assets/blockly/editor.html');
 
-    // ► Android-Extras, z.B. Dev-Tools
-    if (Platform.isAndroid) {
+    if (_ctrl.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
     }
   }
@@ -54,16 +52,34 @@ class _ProgrammingScreenState extends ConsumerState<ProgrammingScreen> {
         title: const Text('Blockly'),
         actions: [
           IconButton(
-            // 👉 NEU: RUN
             tooltip: 'Run & senden',
             icon: const Icon(Icons.play_arrow_rounded),
             onPressed: () async {
-              // 1) Python-String von der WebView holen
-              await _ctrl.runJavaScript('sendPython()');
-              // -> landet automatisch im Riverpod-State (siehe Channel)
-              // 2) nach kurzem Delay UDP schicken
+              // 1) Sichtbares Feedback in der App
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('▶️ Run-Button gedrückt')),
+              );
+              // 2) Log in der Debug-Console
+              debugPrint('▶️ Run-Button gedrückt');
+
+              // 3) JS-Code in der WebView auslösen
+              try {
+                await _ctrl.runJavaScript('sendPython()');
+              } catch (e) {
+                debugPrint('❌ Fehler runJavaScript: $e');
+              }
+
+              // 4) Python-Code aus dem Riverpod-State lesen
               final py = ref.read(blocklyProvider).python;
-              if (py.trim().isNotEmpty) await _sendToTello(py);
+              debugPrint('📝 Generierter Python-Code:\n$py');
+
+              // 5) Wenn Code da ist, senden
+              if (py.trim().isNotEmpty) {
+                await _sendToTello(py);
+                debugPrint('✅ Senden abgeschlossen');
+              } else {
+                debugPrint('⚠️ Kein Python-Code, nichts gesendet');
+              }
             },
           ),
           IconButton(
@@ -84,24 +100,40 @@ class _ProgrammingScreenState extends ConsumerState<ProgrammingScreen> {
     );
   }
 
-  /* ---------- Mini-Sender ---------- */
   Future<void> _sendToTello(String python) async {
+    debugPrint('⚙️ _sendToTello gestartet…');
+    final telloAddr = InternetAddress('192.168.10.1');
     final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
 
-    // Tello erst in SDK-Mode
-    socket.send(utf8.encode('command'), InternetAddress('192.168.10.1'), 8889);
-    await Future.delayed(const Duration(milliseconds: 50));
+    socket.listen((event) {
+      if (event == RawSocketEvent.read) {
+        final dg = socket.receive();
+        if (dg != null) {
+          final resp = utf8.decode(dg.data);
+          debugPrint('📡 Tello antwortet: $resp');
+        }
+      }
+    });
 
+    // SDK-Mode einschalten
+    debugPrint('→ Sende: command');
+    socket.send(utf8.encode('command'), telloAddr, 8889);
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // jede Zeile aus dem Python-String senden
     for (final line in LineSplitter.split(python)) {
       final cmd = _parse(line);
       if (cmd == null) continue;
-      socket.send(utf8.encode(cmd), InternetAddress('192.168.10.1'), 8889);
-      await Future.delayed(const Duration(milliseconds: 100));
+      debugPrint('→ Sende: $cmd');
+      socket.send(utf8.encode(cmd), telloAddr, 8889);
+      await Future.delayed(const Duration(milliseconds: 200));
     }
+
+    await Future.delayed(const Duration(milliseconds: 500));
     socket.close();
+    debugPrint('🔒 Socket geschlossen');
   }
 
-  /// "tello.forward(100)"  ->  "forward 100"
   String? _parse(String line) {
     final m = RegExp(r'tello\.(\w+)\((\d*)\)').firstMatch(line.trim());
     if (m == null) return null;
