@@ -2,10 +2,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
-
 import '../../application/block/blockly_controller.dart';
 
 class ProgrammingScreen extends ConsumerStatefulWidget {
@@ -21,7 +19,6 @@ class _ProgrammingScreenState extends ConsumerState<ProgrammingScreen> {
   @override
   void initState() {
     super.initState();
-
     final creationParams =
         Platform.isAndroid
             ? AndroidWebViewControllerCreationParams()
@@ -49,54 +46,80 @@ class _ProgrammingScreenState extends ConsumerState<ProgrammingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blockly'),
+        leadingWidth: 100,
+        automaticallyImplyLeading: false,
+        leading: TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('← Zurück', style: TextStyle(color: Colors.white)),
+        ),
+        title: const Text(
+          'Drohnen-Programmierung',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+        ),
+        centerTitle: true,
         actions: [
-          IconButton(
-            tooltip: 'Run & senden',
-            icon: const Icon(Icons.play_arrow_rounded),
-            onPressed: () async {
-              // 1) Sichtbares Feedback in der App
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('▶️ Run-Button gedrückt')),
-              );
-              // 2) Log in der Debug-Console
-              debugPrint('▶️ Run-Button gedrückt');
-
-              // 3) JS-Code in der WebView auslösen
-              try {
-                await _ctrl.runJavaScript('sendPython()');
-              } catch (e) {
-                debugPrint('❌ Fehler runJavaScript: $e');
-              }
-
-              // 4) Python-Code aus dem Riverpod-State lesen
-              final py = ref.read(blocklyProvider).python;
-              debugPrint('📝 Generierter Python-Code:\n$py');
-
-              // 5) Wenn Code da ist, senden
-              if (py.trim().isNotEmpty) {
-                await _sendToTello(py);
-                debugPrint('✅ Senden abgeschlossen');
-              } else {
-                debugPrint('⚠️ Kein Python-Code, nichts gesendet');
-              }
-            },
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: TextButton(
+              onPressed: _onRunPressed,
+              child: const Text(
+                'Ausführen',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.code),
-            onPressed:
-                () => showDialog(
-                  context: context,
-                  builder:
-                      (_) => AlertDialog(
-                        title: const Text('SDK-Skript'),
-                        content: SelectableText(code),
-                      ),
-                ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: TextButton(
+              onPressed: () => _showCodeDialog(context, code),
+              child: const Text('Code', style: TextStyle(color: Colors.white)),
+            ),
           ),
         ],
+        backgroundColor: Colors.blueAccent,
+        elevation: 2,
       ),
       body: WebViewWidget(controller: _ctrl),
+    );
+  }
+
+  Future<void> _onRunPressed() async {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('▶️ Ausführen gedrückt')));
+    debugPrint('▶️ Run-Button gedrückt');
+
+    try {
+      await _ctrl.runJavaScript('sendPython()');
+    } catch (e) {
+      debugPrint('❌ Fehler runJavaScript: $e');
+    }
+
+    final python = ref.read(blocklyProvider).python;
+    debugPrint('📝 Generierter Python-Code:\n$python');
+
+    if (python.trim().isNotEmpty) {
+      await _sendToTello(python);
+      debugPrint('✅ Senden abgeschlossen');
+    } else {
+      debugPrint('⚠️ Kein Python-Code, nichts gesendet');
+    }
+  }
+
+  void _showCodeDialog(BuildContext context, String code) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text('Generierter Python-Code'),
+            content: SelectableText(code.isEmpty ? '(leer)' : code),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Schließen'),
+              ),
+            ],
+          ),
     );
   }
 
@@ -109,18 +132,15 @@ class _ProgrammingScreenState extends ConsumerState<ProgrammingScreen> {
       if (event == RawSocketEvent.read) {
         final dg = socket.receive();
         if (dg != null) {
-          final resp = utf8.decode(dg.data);
-          debugPrint('📡 Tello antwortet: $resp');
+          debugPrint('📡 Tello antwortet: ${utf8.decode(dg.data)}');
         }
       }
     });
 
-    // SDK-Mode einschalten
     debugPrint('→ Sende: command');
     socket.send(utf8.encode('command'), telloAddr, 8889);
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // jede Zeile aus dem Python-String senden
     for (final line in LineSplitter.split(python)) {
       final cmd = _parse(line);
       if (cmd == null) continue;

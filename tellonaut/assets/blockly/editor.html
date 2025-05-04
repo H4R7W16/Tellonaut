@@ -1,95 +1,147 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
   <title>Tellonaut Blockly</title>
 
-  <!-- Blockly-Kern -->
   <script src="blockly_compressed.js"></script>
   <script src="blocks_compressed.js"></script>
   <script src="python_compressed.js"></script>
-  <!-- Pfad korrigiert: msg/de.js statt msg/js/de.js -->
   <script src="msg/de.js"></script>
-
-  <!-- Eigene Blöcke -->
   <script src="custom_blocks.js"></script>
 
   <style>
     html, body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+      margin: 0; height: 100vh;
+      display: flex; flex-direction: column;
     }
     #toolbar {
-      flex: 0 0 auto;
-      background: #f5f5f5;
-      padding: 4px 8px;
+      background: #f5f5f5; padding: 4px;
+      display: flex; gap: 8px;
     }
     #ws {
-      flex: 1 1 auto;
-      width: 100%;
+      flex: 1; width: 100%;
     }
-    #runBtn { font-size:14px; padding:4px 12px; }
+    button.mode {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+    }
+    button.mode.active {
+      background: #4a90e2;
+      color: white;
+      border-color: #4a90e2;
+    }
   </style>
 </head>
 
 <body>
+  <!-- 1) Toolbar zum Modus-Wechsel -->
   <div id="toolbar">
-    <button id="runBtn" onclick="sendPython()">&#9658; Run</button>
+    <button id="modeBasic" class="mode active">Einfach</button>
+    <button id="modeAdvanced" class="mode">Erweitert</button>
   </div>
 
+  <!-- 2) Blockly-Workspace -->
   <div id="ws"></div>
 
-  <!-- Namespace ergänzt -->
-  <xml xmlns="https://developers.google.com/blockly/xml"
-       id="toolbox"
-       style="display:none">
-    <category name="🚁 Bewegung" colour="#4a90e2">
+  <!-- 3) Toolbox für den Einfach-Modus -->
+  <xml id="toolbox_basic" style="display:none">
+    <category name="Bewegung" colour="#4a90e2">
       <block type="tn_takeoff"></block>
       <block type="tn_land"></block>
-      <block type="tn_up"></block>
-      <block type="tn_down"></block>
       <block type="tn_forward"></block>
       <block type="tn_back"></block>
       <block type="tn_left"></block>
       <block type="tn_right"></block>
+      <block type="tn_up"></block>
+      <block type="tn_down"></block>
+      <block type="tn_stop"></block>
+      <block type="tn_cw"></block>
+      <block type="tn_ccw"></block>
+    </category>
+    <category name="Einstellungen" colour="#9b59b6">
+      <block type="tn_speed"></block>
+    </category>
+  </xml>
+
+  <!-- 4) Toolbox für den Erweitert-Modus -->
+  <xml id="toolbox_advanced" style="display:none">
+    <!-- alle Blöcke wie zuvor: Bewegung, Flip, Go, Curve, Jump, Status-Abfrage, usw. -->
+    <category name="Bewegung" colour="#4a90e2">
+      <block type="tn_takeoff"></block>
+      <block type="tn_land"></block>
+      <block type="tn_emergency"></block>
+      <block type="tn_throwfly"></block>
+      <block type="tn_stop"></block>
+      <block type="tn_up"></block>
+      <block type="tn_down"></block>
+      <block type="tn_left"></block>
+      <block type="tn_right"></block>
+      <block type="tn_forward"></block>
+      <block type="tn_back"></block>
       <block type="tn_cw"></block>
       <block type="tn_ccw"></block>
       <block type="tn_flip_f"></block>
       <block type="tn_flip_b"></block>
       <block type="tn_flip_l"></block>
       <block type="tn_flip_r"></block>
-      <block type="tn_motoron"></block>
-      <block type="tn_motoroff"></block>
-      <block type="tn_stop"></block>
+      <block type="tn_go"></block>
+      <block type="tn_curve"></block>
+      <block type="tn_jump"></block>
+    </category>
+    <category name="Einstellungen" colour="#9b59b6">
+      <block type="tn_speed"></block>
+      <block type="tn_reboot"></block>
+      <block type="tn_mon"></block>
+      <block type="tn_moff"></block>
+      <block type="tn_mdirection"></block>
+      <block type="tn_rc"></block>
+      <block type="tn_wifi"></block>
+      <block type="tn_wifisetchannel"></block>
+    </category>
+    <category name="Status & Abfrage" colour="#e67e22">
+      <block type="tn_batteryq"></block>
+      <block type="tn_timeq"></block>
+      <block type="tn_heightq"></block>
+      <block type="tn_tofq"></block>
+      <block type="tn_baroq"></block>
     </category>
   </xml>
 
   <script>
-    // Workspace global speichern, falls wir es von außen brauchen
+    // Inject mit dem Basic-Toolbox als Start
+    const basicXml    = document.getElementById('toolbox_basic');
+    const advancedXml = document.getElementById('toolbox_advanced');
     window.workspace = Blockly.inject('ws', {
-      toolbox: document.getElementById('toolbox'),
+      toolbox: basicXml,
       renderer: 'zelos',
       scrollbars: true,
       trashcan: true,
       sounds: false
     });
 
+    // Modus-Buttons
+    document.getElementById('modeBasic')
+      .addEventListener('click', () => {
+        workspace.updateToolbox(basicXml);
+        document.getElementById('modeBasic').classList.add('active');
+        document.getElementById('modeAdvanced').classList.remove('active');
+      });
+    document.getElementById('modeAdvanced')
+      .addEventListener('click', () => {
+        workspace.updateToolbox(advancedXml);
+        document.getElementById('modeAdvanced').classList.add('active');
+        document.getElementById('modeBasic').classList.remove('active');
+      });
+
+    // Code-Generierung & Flutter-Channel
     function sendPython() {
       const code = Blockly.Python.workspaceToCode(window.workspace);
-      if (window.TellonautChannel?.postMessage) {
-        window.TellonautChannel.postMessage(code);
-      }
+      window.TellonautChannel?.postMessage(code);
     }
-
-    // Optional: Live-Synchronisierung
-    window.workspace.addChangeListener(() => {
-      const autoCode = Blockly.Python.workspaceToCode(window.workspace);
-      if (window.TellonautChannel?.postMessage) {
-        window.TellonautChannel.postMessage(autoCode);
-      }
-    });
+    window.workspace.addChangeListener(sendPython);
   </script>
 </body>
 </html>
