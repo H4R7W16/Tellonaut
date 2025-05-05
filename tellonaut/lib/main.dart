@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'core/theming/app_theme.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() {
@@ -12,8 +14,9 @@ class TellonautApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Tellonaut',
-      theme: ThemeData(colorSchemeSeed: Colors.blue, useMaterial3: true),
+      theme: buildAppTheme(),
       home: const HomeScreen(),
     );
   }

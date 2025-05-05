@@ -1,86 +1,117 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8"/>
-  <title>Tellonaut Blockly</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tellonaut Blockly Editor</title>
 
+  <!-- Blockly core -->
   <script src="blockly_compressed.js"></script>
   <script src="blocks_compressed.js"></script>
   <script src="python_compressed.js"></script>
   <script src="msg/de.js"></script>
+  <!-- Tellonaut Custom Blocks (v1.5) -->
   <script src="custom_blocks.js"></script>
 
   <style>
-    html, body {
-      margin: 0; height: 100vh;
-      display: flex; flex-direction: column;
-    }
-    #toolbar {
-      background: #f5f5f5; padding: 4px;
-      display: flex; gap: 8px;
-    }
-    #ws {
-      flex: 1; width: 100%;
-    }
-    button.mode {
-      padding: 6px 12px;
-      border: 1px solid #ccc;
-      background: white;
-      cursor: pointer;
-    }
-    button.mode.active {
-      background: #4a90e2;
-      color: white;
-      border-color: #4a90e2;
-    }
+    html,body{margin:0;height:100%;display:flex;flex-direction:column;font-family:Inter,Arial,sans-serif;background:#f7f9fc}
+    #toolbar{display:flex;gap:8px;padding:8px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.08)}
+    .mode{padding:6px 12px;border:1px solid #cfd7e3;border-radius:8px;background:#fff;cursor:pointer;font-size:14px}
+    .mode.active{background:#006cff;color:#fff;border-color:#006cff}
+    #ws{flex:1;width:100%}
   </style>
 </head>
-
 <body>
-  <!-- 1) Toolbar zum Modus-Wechsel -->
+  <!-- Toolbar: Profil‑Toggle -->
   <div id="toolbar">
-    <button id="modeBasic" class="mode active">Einfach</button>
-    <button id="modeAdvanced" class="mode">Erweitert</button>
+    <button id="btn-starter"  class="mode active">Starter</button>
+    <button id="btn-builder"  class="mode">Builder</button>
+    <button id="btn-expert"   class="mode">Expert</button>
   </div>
 
-  <!-- 2) Blockly-Workspace -->
+  <!-- Blockly workspace container -->
   <div id="ws"></div>
 
-  <!-- 3) Toolbox für den Einfach-Modus -->
-  <xml id="toolbox_basic" style="display:none">
-    <category name="Bewegung" colour="#4a90e2">
+  <!-- Toolbox definitions (hidden) -->
+  <!-- Starter: Flug & Bewegung + LED RGB -->
+  <xml id="toolbox_starter" style="display:none">
+    <category name="Flug & Safety" colour="#006CFF">
       <block type="tn_takeoff"></block>
       <block type="tn_land"></block>
+      <block type="tn_emergency"></block>
+    </category>
+    <category name="Bewegung" colour="#FF9100">
       <block type="tn_forward"></block>
       <block type="tn_back"></block>
       <block type="tn_left"></block>
       <block type="tn_right"></block>
       <block type="tn_up"></block>
       <block type="tn_down"></block>
-      <block type="tn_stop"></block>
       <block type="tn_cw"></block>
       <block type="tn_ccw"></block>
+      <block type="tn_flip_f"></block>
     </category>
-    <category name="Einstellungen" colour="#9b59b6">
-      <block type="tn_speed"></block>
+    <category name="Licht & Matrix" colour="#D500F9">
+      <block type="tn_led_rgb"></block>
     </category>
   </xml>
 
-  <!-- 4) Toolbox für den Erweitert-Modus -->
-  <xml id="toolbox_advanced" style="display:none">
-    <!-- alle Blöcke wie zuvor: Bewegung, Flip, Go, Curve, Jump, Status-Abfrage, usw. -->
-    <category name="Bewegung" colour="#4a90e2">
+  <!-- Builder: + Sensoren, MissionPad, mehr Bewegung -->
+  <xml id="toolbox_builder" style="display:none">
+    <category name="Flug & Safety" colour="#006CFF">
+      <block type="tn_takeoff"></block>
+      <block type="tn_land"></block>
+      <block type="tn_emergency"></block>
+      <block type="tn_stop"></block>
+    </category>
+    <category name="Bewegung & Stunts" colour="#FF9100">
+      <block type="tn_forward"></block>
+      <block type="tn_back"></block>
+      <block type="tn_left"></block>
+      <block type="tn_right"></block>
+      <block type="tn_up"></block>
+      <block type="tn_down"></block>
+      <block type="tn_cw"></block>
+      <block type="tn_ccw"></block>
+      <block type="tn_flip_f"></block>
+      <block type="tn_flip_b"></block>
+      <block type="tn_flip_l"></block>
+      <block type="tn_flip_r"></block>
+      <block type="tn_go"></block>
+      <block type="tn_curve"></block>
+    </category>
+    <category name="Sensoren & Daten" colour="#009688">
+      <block type="tn_battery_q"></block>
+      <block type="tn_height_q"></block>
+      <block type="tn_tof_q"></block>
+    </category>
+    <category name="Licht & Matrix" colour="#D500F9">
+      <block type="tn_led_rgb"></block>
+      <block type="tn_matrix_heart"></block>
+    </category>
+    <category name="MissionPad" colour="#673AB7">
+      <block type="tn_mon"></block>
+      <block type="tn_moff"></block>
+      <block type="tn_go"></block>
+    </category>
+  </xml>
+
+  <!-- Expert: alle Kategorien -->
+  <xml id="toolbox_expert" style="display:none">
+    <category name="Flug & Safety" colour="#006CFF">
       <block type="tn_takeoff"></block>
       <block type="tn_land"></block>
       <block type="tn_emergency"></block>
       <block type="tn_throwfly"></block>
       <block type="tn_stop"></block>
-      <block type="tn_up"></block>
-      <block type="tn_down"></block>
-      <block type="tn_left"></block>
-      <block type="tn_right"></block>
+    </category>
+    <category name="Bewegung & Stunts" colour="#FF9100">
       <block type="tn_forward"></block>
       <block type="tn_back"></block>
+      <block type="tn_left"></block>
+      <block type="tn_right"></block>
+      <block type="tn_up"></block>
+      <block type="tn_down"></block>
       <block type="tn_cw"></block>
       <block type="tn_ccw"></block>
       <block type="tn_flip_f"></block>
@@ -91,57 +122,71 @@
       <block type="tn_curve"></block>
       <block type="tn_jump"></block>
     </category>
-    <category name="Einstellungen" colour="#9b59b6">
-      <block type="tn_speed"></block>
-      <block type="tn_reboot"></block>
+    <category name="Sensoren & Daten" colour="#009688">
+      <block type="tn_battery_q"></block>
+      <block type="tn_height_q"></block>
+      <block type="tn_tof_q"></block>
+      <block type="tn_pitch_q"></block>
+      <block type="tn_roll_q"></block>
+      <block type="tn_yaw_q"></block>
+    </category>
+    <category name="MissionPad & Navigation" colour="#673AB7">
       <block type="tn_mon"></block>
       <block type="tn_moff"></block>
       <block type="tn_mdirection"></block>
+      <block type="tn_go"></block>
+      <block type="tn_curve"></block>
+      <block type="tn_jump"></block>
+    </category>
+    <category name="Licht & Matrix" colour="#D500F9">
+      <block type="tn_led_rgb"></block>
+      <block type="tn_matrix_heart"></block>
+    </category>
+    <category name="Einstellungen & System" colour="#607D8B">
+      <block type="tn_speed"></block>
+      <block type="tn_reboot"></block>
       <block type="tn_rc"></block>
       <block type="tn_wifi"></block>
       <block type="tn_wifisetchannel"></block>
     </category>
-    <category name="Status & Abfrage" colour="#e67e22">
-      <block type="tn_batteryq"></block>
-      <block type="tn_timeq"></block>
-      <block type="tn_heightq"></block>
-      <block type="tn_tofq"></block>
-      <block type="tn_baroq"></block>
-    </category>
   </xml>
 
   <script>
-    // Inject mit dem Basic-Toolbox als Start
-    const basicXml    = document.getElementById('toolbox_basic');
-    const advancedXml = document.getElementById('toolbox_advanced');
-    window.workspace = Blockly.inject('ws', {
-      toolbox: basicXml,
+    // Workspace injection
+    const starterXml  = document.getElementById('toolbox_starter');
+    const builderXml  = document.getElementById('toolbox_builder');
+    const expertXml   = document.getElementById('toolbox_expert');
+
+    const workspace = Blockly.inject('ws', {
+      toolbox: starterXml,
       renderer: 'zelos',
       scrollbars: true,
       trashcan: true,
-      sounds: false
+      sounds: false,
+      zoom: {controls:true,wheel:true}
     });
 
-    // Modus-Buttons
-    document.getElementById('modeBasic')
-      .addEventListener('click', () => {
-        workspace.updateToolbox(basicXml);
-        document.getElementById('modeBasic').classList.add('active');
-        document.getElementById('modeAdvanced').classList.remove('active');
-      });
-    document.getElementById('modeAdvanced')
-      .addEventListener('click', () => {
-        workspace.updateToolbox(advancedXml);
-        document.getElementById('modeAdvanced').classList.add('active');
-        document.getElementById('modeBasic').classList.remove('active');
-      });
-
-    // Code-Generierung & Flutter-Channel
-    function sendPython() {
-      const code = Blockly.Python.workspaceToCode(window.workspace);
-      window.TellonautChannel?.postMessage(code);
+    // Profile switch helper
+    function switchProfile(profile){
+      workspace.updateToolbox(profile);
+      document.querySelectorAll('.mode').forEach(btn=>btn.classList.remove('active'));
+      document.getElementById('btn-'+profile.id).classList.add('active');
     }
-    window.workspace.addChangeListener(sendPython);
+
+    document.getElementById('btn-starter').onclick = ()=>switchProfile(starterXml);
+    document.getElementById('btn-builder').onclick = ()=>switchProfile(builderXml);
+    document.getElementById('btn-expert').onclick  = ()=>switchProfile(expertXml);
+
+    // Expose sendPython for Flutter call
+    function sendPython(){
+      const code = Blockly.Python.workspaceToCode(workspace);
+      if(window.TellonautChannel && window.TellonautChannel.postMessage){
+        window.TellonautChannel.postMessage(code);
+      } else {
+        console.warn('TellonautChannel not ready');
+      }
+    }
+    window.sendPython = sendPython;
   </script>
 </body>
 </html>
