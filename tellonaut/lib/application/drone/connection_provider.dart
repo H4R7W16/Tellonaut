@@ -30,7 +30,9 @@ class ConnectionNotifier extends StateNotifier<ConnectionStatus> {
 
   Future<void> takeOff() => _repo.sendCommand('takeoff');
   Future<void> land() => _repo.sendCommand('land');
-
+  /// Führt einen Flip in eine der vier Richtungen aus: 'front', 'back', 'left', 'right'.
+  Future<void> flip(String direction) =>
+    _repo.sendCommand('flip $direction');
   /// RC‑Tuple als **benanntes** Record
   Future<void> sendRC(({int lr, int fb, int ud, int yw}) v) =>
       _repo.sendCommand('rc ${v.lr} ${v.fb} ${v.ud} ${v.yw}');
