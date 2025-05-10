@@ -1,6 +1,13 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'presentation/screens/home_screen.dart';
+
+import 'core/theming/app_theme.dart';
+// statt home_screen.dart jetzt:
+import 'presentation/screens/mode_selection_screen.dart';
+// Für named routes (optional):
+import 'presentation/screens/live_control_screen.dart';
+import 'presentation/screens/programming_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: TellonautApp()));
@@ -12,9 +19,16 @@ class TellonautApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Tellonaut',
-      theme: ThemeData(colorSchemeSeed: Colors.blue, useMaterial3: true),
-      home: const HomeScreen(),
+      theme: buildAppTheme(),
+      // neuer Einstieg
+      home: const ModeSelectionScreen(),
+      // optional: direkte Routen
+      routes: {
+        '/live-control': (_) => const LiveControlScreen(),
+        '/blockly': (_) => const ProgrammingScreen(),
+      },
     );
   }
 }
